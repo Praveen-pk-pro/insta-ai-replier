@@ -12,28 +12,29 @@ SESSION_FILE = "addition.json"
 
 # 🤖 Groq AI reply using Mixtral
 def get_ai_reply(user_message):
-    url = "https://api.groq.com/openai/v1/chat/completions"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {GROQ_API_KEY}"
-    }
-    data = {
-        "model": "mixtral-8x7b-32768",
-        "messages": [
-            {"role": "system", "content": "Reply casually in Tanglish (Tamil + English mix)."},
-            {"role": "user", "content": user_message}
-        ]
-    }
-
     try:
-        res = requests.post(url, json=data, headers=headers)
-        print("🌐 Groq response:", res.text)
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {GEMINI_API_KEY}"  # This is your Groq API key
+        }
+        data = {
+            "model": "llama3-8b-8192",
+            "messages": [
+                {"role": "system", "content": "Reply casually in Tanglish (Tamil + English mix)."},
+                {"role": "user", "content": user_message}
+            ]
+        }
+        res = requests.post(url, headers=headers, json=data)
         res.raise_for_status()
-        reply = res.json()["choices"][0]["message"]["content"]
+        result = res.json()
+        reply = result["choices"][0]["message"]["content"]
+        print("🌐 Groq response:", reply)
         return reply.strip() + " (Replied by AI)"
     except Exception as e:
         print("⚠️ Groq API failed:", e)
         return "Sorry, I can’t reply right now (Replied by AI)"
+
 
 
 # 📲 Instagram Login
