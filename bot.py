@@ -25,10 +25,10 @@ def get_ai_reply(user_message):
 
     try:
         res = requests.post(url, json=data, headers=headers)
+        print("🌐 DeepSeek raw response:", res.text)  # Log full API reply
         res.raise_for_status()
-        result = res.json()
-        print("🔁 DeepSeek reply:", result)  # Debug log
 
+        result = res.json()
         reply = result["choices"][0]["message"]["content"]
         return reply.strip() + " (Replied by AI)"
     except Exception as e:
@@ -50,6 +50,7 @@ except Exception as e:
 # Get friend user ID
 try:
     friend_user_id = cl.user_id_from_username(FRIEND_USERNAME)
+    print(f"🔍 Found user ID for {FRIEND_USERNAME}: {friend_user_id}")
 except Exception as e:
     print("❌ Couldn't get friend ID:", e)
     exit()
@@ -62,7 +63,7 @@ while True:
     try:
         threads = cl.direct_threads()
         for thread in threads:
-            if thread.users[0].username != FRIEND_USERNAME:
+            if not thread.users or thread.users[0].username != FRIEND_USERNAME:
                 continue
 
             messages = cl.direct_messages(thread.id, amount=1)
@@ -78,6 +79,6 @@ while True:
                 last_seen_msg_id = msg.id
 
     except Exception as err:
-        print("⚠️ Error:", err)
+        print("⚠️ Error in loop:", err)
 
     time.sleep(15)
