@@ -3,10 +3,10 @@ import requests
 import time
 import os
 
-USERNAME = os.getenv("INSTA_USERNAME")
-PASSWORD = os.getenv("INSTA_PASSWORD")
-FRIEND_USERNAME = os.getenv("FRIEND_INSTA")
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+USERNAME = os.getenv("INSTA_U")
+PASSWORD = os.getenv("INSTA_P")
+FRIEND_USERNAME = os.getenv("INSTA")
+DEEPSEEK_API_KEY = os.getenv("INTAKEY")
 SESSION_FILE = "addition.json"
 
 def get_ai_reply(user_message):
