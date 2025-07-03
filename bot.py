@@ -10,18 +10,18 @@ FRIEND_USERNAME = os.getenv("INSTA")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 SESSION_FILE = "addition.json"
 
-# 🤖 Groq AI reply using llama3
+# 🤖 AI reply in English only
 def get_ai_reply(user_message):
     try:
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {GROQ_API_KEY}"  # ✅ Corrected variable name
+            "Authorization": f"Bearer {GROQ_API_KEY}"
         }
         data = {
-            "model": "llama3-8b-8192",  # ✅ Updated model
+            "model": "llama3-8b-8192",
             "messages": [
-                {"role": "system", "content": "Reply casually in Tanglish (Tamil + English mix)."},
+                {"role": "system", "content": "Reply casually in English and also in tamil if it in tanglish."},
                 {"role": "user", "content": user_message}
             ]
         }
@@ -32,12 +32,11 @@ def get_ai_reply(user_message):
 
         reply = result["choices"][0]["message"]["content"]
         print("🌐 Groq response:", reply)
-        return reply.strip() + " (Replied by AI)"
+        return reply.strip() + " (Replied by AI, made by PK)"
 
     except Exception as e:
         print("⚠️ Groq API failed:", e)
-        return "Sorry, I can’t reply right now (Replied by AI)"
-
+        return "Sorry, I can’t reply right now (Replied by AI, made by PK)"
 
 # 📲 Instagram Login
 cl = Client()
@@ -77,6 +76,8 @@ while True:
             msg = messages[0]
             if msg.id != last_seen_msg_id and msg.user_id == friend_user_id:
                 print(f"📨 New message: {msg.text}")
+                
+                # ✅ Always reply in English
                 reply = get_ai_reply(msg.text)
                 cl.direct_send(reply, [friend_user_id])
                 print(f"✅ Sent reply: {reply}")
