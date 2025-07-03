@@ -13,16 +13,21 @@ SESSION_FILE = "addition.json"
 # 🧠 Gemini AI reply function
 def get_ai_reply(user_message):
     try:
+        print("🔐 Using Gemini API Key:", GEMINI_API_KEY[:8], "****")  # Check key used
         genai.configure(api_key=GEMINI_API_KEY)
         model = genai.GenerativeModel("gemini-pro")
 
         prompt = f"Reply casually in Tanglish (Tamil + English mix): {user_message}"
+        print("📝 Prompting Gemini:", prompt)
+
         response = model.generate_content(prompt)
-        print("🌐 Gemini reply:", response.text)
+        print("🌐 Gemini raw reply:", response.text)
+
         return response.text.strip() + " (Replied by AI)"
     except Exception as e:
         print("⚠️ Gemini API failed:", e)
         return "Sorry, I can’t reply right now (Replied by AI)"
+
 
 # 📲 Instagram Login
 cl = Client()
