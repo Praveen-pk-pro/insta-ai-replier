@@ -1,0 +1,7 @@
+services:
+  - type: worker
+    name: insta-ai-replier
+    env: python
+    buildCommand: ""
+    startCommand: python bot.py
+    autoDeploy: true
