@@ -1,42 +1,30 @@
 from instagrapi import Client
-import requests
+import google.generativeai as genai
 import time
 import os
 
+# Load env variables
 USERNAME = os.getenv("INSTA_U")
 PASSWORD = os.getenv("INSTA_P")
 FRIEND_USERNAME = os.getenv("INSTA")
-DEEPSEEK_API_KEY = os.getenv("INTAKEY")
+GEMINI_API_KEY = os.getenv("INTAKEY")  # Now used as Gemini key
 SESSION_FILE = "addition.json"
 
+# 🧠 Gemini AI reply function
 def get_ai_reply(user_message):
-    url = "https://api.deepseek.com/v1/chat/completions"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
-    }
-    data = {
-        "model": "deepseek-chat",
-        "messages": [
-            {"role": "system", "content": "Reply casually in Tanglish (Tamil + English mix)."},
-            {"role": "user", "content": user_message}
-        ]
-    }
-
     try:
-        res = requests.post(url, json=data, headers=headers)
-        print("🌐 DeepSeek raw response:", res.text)  # Log full API reply
-        res.raise_for_status()
+        genai.configure(api_key=GEMINI_API_KEY)
+        model = genai.GenerativeModel("gemini-pro")
 
-        result = res.json()
-        reply = result["choices"][0]["message"]["content"]
-        return reply.strip() + " (Replied by AI)"
+        prompt = f"Reply casually in Tanglish (Tamil + English mix): {user_message}"
+        response = model.generate_content(prompt)
+        print("🌐 Gemini reply:", response.text)
+        return response.text.strip() + " (Replied by AI)"
     except Exception as e:
-        print("⚠️ DeepSeek API failed:", e)
+        print("⚠️ Gemini API failed:", e)
         return "Sorry, I can’t reply right now (Replied by AI)"
 
-
-# Login using session if available
+# 📲 Instagram Login
 cl = Client()
 try:
     cl.load_settings(SESSION_FILE)
@@ -47,7 +35,7 @@ except Exception as e:
     print("❌ Login failed:", e)
     exit()
 
-# Get friend user ID
+# 🔍 Get friend user ID
 try:
     friend_user_id = cl.user_id_from_username(FRIEND_USERNAME)
     print(f"🔍 Found user ID for {FRIEND_USERNAME}: {friend_user_id}")
