@@ -85,4 +85,4 @@ while True:
     except Exception as err:
         print("⚠️ Error in loop:", err)
 
-    time.sleep(15)
+    time.sleep(3)
