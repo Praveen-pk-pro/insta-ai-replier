@@ -10,31 +10,33 @@ FRIEND_USERNAME = os.getenv("INSTA")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 SESSION_FILE = "addition.json"
 
-# 🤖 Groq AI reply using Mixtral
+# 🤖 Groq AI reply using llama3
 def get_ai_reply(user_message):
     try:
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {GEMINI_API_KEY}"  # This is your Groq API key
+            "Authorization": f"Bearer {GROQ_API_KEY}"  # ✅ Corrected variable name
         }
         data = {
-            "model": "llama3-8b-8192",
+            "model": "llama3-8b-8192",  # ✅ Updated model
             "messages": [
                 {"role": "system", "content": "Reply casually in Tanglish (Tamil + English mix)."},
                 {"role": "user", "content": user_message}
             ]
         }
+
         res = requests.post(url, headers=headers, json=data)
         res.raise_for_status()
         result = res.json()
+
         reply = result["choices"][0]["message"]["content"]
         print("🌐 Groq response:", reply)
         return reply.strip() + " (Replied by AI)"
+
     except Exception as e:
         print("⚠️ Groq API failed:", e)
         return "Sorry, I can’t reply right now (Replied by AI)"
-
 
 
 # 📲 Instagram Login
