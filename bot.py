@@ -29,7 +29,7 @@ FRIEND_CONFIGS = {
         ]
     },
     "praveen_apk06": {
-        "prompt": "Reply casually in Tanglish (Tamil + English mix).",
+        "prompt": "Reply casually in English.",
         "suffixes": [
             " (hey OWNER)",
             " (YOU STILL THINK ABOUT HER)",
