@@ -22,13 +22,19 @@ def get_ai_reply(user_message):
             {"role": "user", "content": user_message}
         ]
     }
+
     try:
         res = requests.post(url, json=data, headers=headers)
-        reply = res.json()["choices"][0]["message"]["content"]
+        res.raise_for_status()
+        result = res.json()
+        print("🔁 DeepSeek reply:", result)  # Debug log
+
+        reply = result["choices"][0]["message"]["content"]
         return reply.strip() + " (Replied by AI)"
     except Exception as e:
-        print("❌ DeepSeek API Error:", e)
-        return "Sorry, I can't reply right now. (Replied by AI)"
+        print("⚠️ DeepSeek API failed:", e)
+        return "Sorry, I can’t reply right now (Replied by AI)"
+
 
 # Login using session if available
 cl = Client()
