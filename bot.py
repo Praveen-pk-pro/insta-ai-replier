@@ -3,10 +3,10 @@ import requests
 import time
 import os
 
-USERNAME = os.getenv("pravo_dev")
-PASSWORD = os.getenv("timeisgolddamapla")
-FRIEND_USERNAME = "praveen_apk06"
-DEEPSEEK_API_KEY = os.getenv("sk-1ff097c55b2144e3b70a44971c47b2f8")
+USERNAME = os.getenv("INSTA_USERNAME")
+PASSWORD = os.getenv("INSTA_PASSWORD")
+FRIEND_USERNAME = os.getenv("FRIEND_INSTA")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 
 def get_ai_reply(user_message):
     url = "https://api.deepseek.com/v1/chat/completions"
@@ -17,17 +17,17 @@ def get_ai_reply(user_message):
     data = {
         "model": "deepseek-chat",
         "messages": [
-            {"role": "system", "content": "Reply casually in Tanglish (Tamil + English mix) like a friend."},
+            {"role": "system", "content": "Reply casually in Tanglish (Tamil + English mix)."},
             {"role": "user", "content": user_message}
         ]
     }
     res = requests.post(url, json=data, headers=headers)
     reply = res.json()["choices"][0]["message"]["content"]
-    return reply.strip() + " (Replied by AI it made by Pk)"
+    return reply.strip() + " (Replied by AI)"
 
 cl = Client()
 cl.login(USERNAME, PASSWORD)
-print("✅ Logged in to Instagram by Pk")
+print("✅ Logged in to Instagram")
 
 last_seen_msg = None
 
