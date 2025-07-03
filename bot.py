@@ -21,7 +21,7 @@ def get_ai_reply(user_message):
         data = {
             "model": "llama3-8b-8192",
             "messages": [
-                {"role": "system", "content": "understand the tanglish and Reply casually in English and also in tamil if it in tanglish."},
+                {"role": "system", "content": "if it in english just Reply casually in English or if in tanglish just reply casually as a friend in tamil."},
                 {"role": "user", "content": user_message}
             ]
         }
@@ -32,7 +32,7 @@ def get_ai_reply(user_message):
 
         reply = result["choices"][0]["message"]["content"]
         print("🌐 Groq response:", reply)
-        return reply.strip() + " (Replied by AI, made by PK)"
+        return reply.strip() + " ( AI made by PK)"
 
     except Exception as e:
         print("⚠️ Groq API failed:", e)
