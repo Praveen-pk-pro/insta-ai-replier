@@ -1,31 +1,38 @@
 from instagrapi import Client
-import google.generativeai as genai
+import requests
 import time
 import os
 
-# Load env variables
+# 🔐 Load environment variables
 USERNAME = os.getenv("INSTA_U")
 PASSWORD = os.getenv("INSTA_P")
 FRIEND_USERNAME = os.getenv("INSTA")
-GEMINI_API_KEY = os.getenv("INTAKEY")  # Now used as Gemini key
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 SESSION_FILE = "addition.json"
 
-# 🧠 Gemini AI reply function
+# 🤖 Groq AI reply using Mixtral
 def get_ai_reply(user_message):
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {GROQ_API_KEY}"
+    }
+    data = {
+        "model": "mixtral-8x7b-32768",
+        "messages": [
+            {"role": "system", "content": "Reply casually in Tanglish (Tamil + English mix)."},
+            {"role": "user", "content": user_message}
+        ]
+    }
+
     try:
-        print("🔐 Using Gemini API Key:", GEMINI_API_KEY[:8], "****")  # Check key used
-        genai.configure(api_key=GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-pro")
-
-        prompt = f"Reply casually in Tanglish (Tamil + English mix): {user_message}"
-        print("📝 Prompting Gemini:", prompt)
-
-        response = model.generate_content(prompt)
-        print("🌐 Gemini raw reply:", response.text)
-
-        return response.text.strip() + " (Replied by AI)"
+        res = requests.post(url, json=data, headers=headers)
+        print("🌐 Groq response:", res.text)
+        res.raise_for_status()
+        reply = res.json()["choices"][0]["message"]["content"]
+        return reply.strip() + " (Replied by AI)"
     except Exception as e:
-        print("⚠️ Gemini API failed:", e)
+        print("⚠️ Groq API failed:", e)
         return "Sorry, I can’t reply right now (Replied by AI)"
 
 
@@ -40,7 +47,7 @@ except Exception as e:
     print("❌ Login failed:", e)
     exit()
 
-# 🔍 Get friend user ID
+# 🔍 Get friend's user ID
 try:
     friend_user_id = cl.user_id_from_username(FRIEND_USERNAME)
     print(f"🔍 Found user ID for {FRIEND_USERNAME}: {friend_user_id}")
@@ -52,6 +59,7 @@ print(f"🤖 Listening for messages from {FRIEND_USERNAME}...")
 
 last_seen_msg_id = None
 
+# 🔁 Auto-reply loop
 while True:
     try:
         threads = cl.direct_threads()
