@@ -21,7 +21,7 @@ def get_ai_reply(user_message):
         data = {
             "model": "llama3-8b-8192",
             "messages": [
-                {"role": "system", "content": "Reply casually in English and also in tamil if it in tanglish."},
+                {"role": "system", "content": "understand the tanglish and Reply casually in English and also in tamil if it in tanglish."},
                 {"role": "user", "content": user_message}
             ]
         }
